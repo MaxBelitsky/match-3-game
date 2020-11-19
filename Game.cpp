@@ -1,15 +1,19 @@
-#include "lib_std_facilities.h"
+#include "std_lib_facilities.h"
 #include <fstream>
 #include "GameEngine.h"
 #include "Bot.h"
+#include "Move.h"
 
 
 int main()
 {
-	GameEngine engine("C:\\Users\\itsupport\\eclipse-workspace\\hi\\src\\map10.txt", "C:\\Users\\itsupport\\eclipse-workspace\\hi\\src\\future10.txt"); //init game engine with map & future map.
+	GameEngine engine("map10.txt", "future10.txt"); //init game engine with map & future map.
 	Bot myBot; //init Bot
 
 	bool smart = true; //false = human, true = bot
+
+
+	//cout << Move(1, 2, 3, 4).x1 << " " << Move(1, 2, 3, 4).x2 << " " << Move(1, 2, 3, 4).y1 << " " << Move(1, 2, 3, 4).y2 << endl;
 
 
 	while(engine.hasLegalMoves()){ //while the game isn't over
@@ -74,7 +78,6 @@ int main()
 		else{ //move is invalid
 			cout<<"Invalid move, try again"<<endl;
 		}
-
 	}
 
 	//the end

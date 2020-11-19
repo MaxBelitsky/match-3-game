@@ -23,6 +23,7 @@ class Bot
 		void findBestMove(int bestMove[]);
 		void printMap();
 		void printMapCopy();
+		void breakTiles();
 };
 
 Bot::Bot() //initialise Bot class - constructor
@@ -65,6 +66,8 @@ void Bot::findBestMove(int bestMove[]){
 		}
 	}
 	cout<<"best move is: "<<bestMove[0]<<bestMove[1]<<bestMove[2]<<bestMove[3]<<" with a score of "<<max<<endl;
+	//printMapCopy();
+	//cout << "The copy map is above" << endl;
 }
 
 int Bot::calculateScore(int x1, int y1, int x2, int y2){
@@ -74,7 +77,15 @@ int Bot::calculateScore(int x1, int y1, int x2, int y2){
 		}
 	}
 	swap(mapCopy[x1][y1], mapCopy[x2][y2]);
-	int score = findSets();
+
+	int max_depth = 2;
+	// Chech the score of a move with a specified depth
+	int score = 0;
+	for(int depth=1; depth <= max_depth; depth++){
+		score += findSets()*depth;
+		breakTiles();
+	}
+	
 	return score;
 }
 
@@ -90,12 +101,14 @@ int Bot::findSets(){
 			} else if(y>0 && mapCopy[x][y] != mapCopy[x][y-1] && tempScore>2){
 				totalScore += tempScore;
 				tempScore = 1;
+				// break here
 			} else {
 				tempScore = 1;
 			}
 		}
 		if(tempScore>2){
 			totalScore += tempScore;
+			// break here
 		}
 	}
 
@@ -117,6 +130,90 @@ int Bot::findSets(){
 		}
 
 	return totalScore;
+}
+
+void Bot::breakTiles(){
+	// Horizontal
+	for(int x=0; x<10; x++){
+		int count = 1;
+		for(int y=0; y<10; y++){
+			if(y>0 && mapCopy[x][y] == mapCopy[x][y-1] && mapCopy[x][y]!=0){
+				count++;
+
+			} else if(y>0 && mapCopy[x][y] != mapCopy[x][y-1] && count>2){
+				// break here
+				int temp_x = x;
+				int temp_x2 = x - 1;
+				for (int temp_y = y; temp_y > y - count; temp_y--){
+					// Make the broken tiles 0
+					mapCopy[x][temp_y] = 0;
+					// Swap the tiles to move zeros upwards
+					while(temp_x > 0){
+						swap(mapCopy[temp_x][temp_y], mapCopy[temp_x2][temp_y]);
+						temp_x--;
+						temp_x2--;
+					}
+				}
+				count = 1;
+			} 
+			
+				else if(y==9 && count>2){
+					// break here
+					int temp_x = x;
+					int temp_x2 = x - 1;
+					for (int temp_y = y; temp_y > y - count; temp_y--){
+						// Make the broken tiles 0
+						mapCopy[x][temp_y] = 0;
+						// Swap the tiles to move zeros upwards
+						while(temp_x > 0){
+							swap(mapCopy[temp_x][temp_y], mapCopy[temp_x2][temp_y]);
+							temp_x--;
+							temp_x2--;
+						}
+					}
+				}
+				else {
+					count = 1;
+			}
+		}
+	}
+
+	// Vertical
+	for(int y=0; y<10; y++){
+		int count = 1;
+		for(int x=0; x<10; x++){
+			if(x>0 && mapCopy[x][y] == mapCopy[x-1][y] && mapCopy[x][y]!=0){
+				count++;
+
+			} else if(x>0 && mapCopy[x][y] != mapCopy[x-1][y] && count>2){
+				// Break here
+				int temp_x = x;
+				int temp_x2 = x - count;
+				while(temp_x2 > -1){
+					mapCopy[temp_x][y] = 0;
+					swap(mapCopy[temp_x][y], mapCopy[temp_x2][y]);
+					temp_x--;
+					temp_x2--;
+				}
+				count = 1;
+			
+			} else if(x==9 && count>2){
+				// Break here
+				int temp_x = x;
+				int temp_x2 = x - count;
+				while(temp_x2 > -1){
+					mapCopy[temp_x][y] = 0;
+					swap(mapCopy[temp_x][y], mapCopy[temp_x2][y]);
+					temp_x--;
+					temp_x2--;
+				}
+				}
+				else {
+					count = 1;
+			}
+		}
+	}
+
 }
 
 bool Bot::isLegalMove(int x1, int y1, int x2, int y2){
@@ -168,6 +265,7 @@ int* Bot::getNextMove(int map[], int nextMove[]) //decide and return next move, 
 	nextMove[3] = tempy2;
 	return nextMove;
 }
+
 void Bot::printMap(){
 
     for(int i=0; i<10; i++){
