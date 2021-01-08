@@ -2,7 +2,6 @@
 #include <fstream>
 #include "GameEngine.h"
 #include "Bot.h"
-#include "Move.h"
 
 
 int main()
@@ -11,9 +10,6 @@ int main()
 	Bot myBot; //init Bot
 
 	bool smart = true; //false = human, true = bot
-
-
-	//cout << Move(1, 2, 3, 4).x1 << " " << Move(1, 2, 3, 4).x2 << " " << Move(1, 2, 3, 4).y1 << " " << Move(1, 2, 3, 4).y2 << endl;
 
 
 	while(engine.hasLegalMoves()){ //while the game isn't over

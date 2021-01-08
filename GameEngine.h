@@ -69,7 +69,7 @@ void GameEngine::readMap(string path, int *arr){
         getline(mapFile, line);
 
         for(char c: line){ //for each char in string
-            if(c!=','){
+            if(c!=',' && c!='\n'){
                 *(arr+j)= atoi(&c); //char into int
                 j++;
             }
